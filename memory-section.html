@@ -1,0 +1,156 @@
+<!-- Thêm CSS này vào trong thẻ <style> -->
+<style>
+/* MEMORY TIMELINE */
+.memory-section{
+margin:80px 0;
+}
+
+.memory-title{
+text-align:center;
+font-family:'Pacifico',cursive;
+font-size:36px;
+color:#ff6b9d;
+margin-bottom:50px;
+}
+
+.timeline{
+position:relative;
+max-width:800px;
+margin:0 auto;
+padding:20px 0;
+}
+
+.timeline::before{
+content:'';
+position:absolute;
+left:50%;
+transform:translateX(-50%);
+width:4px;
+height:100%;
+background:linear-gradient(180deg, #ff6b9d, #ffc4e1);
+border-radius:2px;
+}
+
+.timeline-item{
+position:relative;
+margin:40px 0;
+opacity:0;
+animation:timelineFadeIn 0.8s ease forwards;
+}
+
+.timeline-item:nth-child(odd){
+padding-right:calc(50% + 40px);
+text-align:right;
+}
+
+.timeline-item:nth-child(even){
+padding-left:calc(50% + 40px);
+text-align:left;
+}
+
+@keyframes timelineFadeIn{
+from{opacity:0;transform:translateY(30px)}
+to{opacity:1;transform:translateY(0)}
+}
+
+.timeline-dot{
+position:absolute;
+top:20px;
+left:50%;
+transform:translateX(-50%);
+width:20px;
+height:20px;
+background:#ff6b9d;
+border:4px solid white;
+border-radius:50%;
+box-shadow:0 0 0 4px #ffe5f0;
+z-index:10;
+}
+
+.timeline-content{
+background:white;
+padding:20px;
+border-radius:15px;
+box-shadow:0 8px 20px rgba(0,0,0,0.1);
+position:relative;
+}
+
+.timeline-date{
+font-size:14px;
+color:#ff6b9d;
+font-weight:600;
+margin-bottom:10px;
+}
+
+.timeline-image{
+width:100%;
+border-radius:10px;
+margin:10px 0;
+}
+
+.timeline-caption{
+font-family:'Caveat',cursive;
+font-size:20px;
+color:#666;
+margin-top:10px;
+}
+
+.add-more-hint{
+text-align:center;
+margin-top:40px;
+font-size:16px;
+color:#999;
+font-style:italic;
+}
+
+@media(max-width:768px){
+.timeline::before{left:20px}
+.timeline-item:nth-child(odd),
+.timeline-item:nth-child(even){
+padding-left:50px;
+padding-right:0;
+text-align:left;
+}
+.timeline-dot{left:20px}
+}
+</style>
+
+<!-- Thêm HTML này trước phần final-section -->
+<div class="memory-section fade-in">
+<div class="memory-title">Kỷ niệm của chúng ta 💕</div>
+<div class="timeline" id="timeline"></div>
+<div class="add-more-hint">Và còn nhiều kỷ niệm đẹp nữa sẽ được thêm vào... 🌸</div>
+</div>
+
+<!-- Thêm JavaScript này trước thẻ </script> cuối cùng -->
+<script>
+// Load memories from JSON
+fetch('photos.json')
+.then(response=>response.json())
+.then(data=>{
+const timeline=document.getElementById('timeline');
+data.forEach((item,index)=>{
+const timelineItem=document.createElement('div');
+timelineItem.className='timeline-item';
+timelineItem.style.animationDelay=(index*0.2)+'s';
+timelineItem.innerHTML=`
+<div class="timeline-dot"></div>
+<div class="timeline-content">
+<div class="timeline-date">${formatDate(item.date)}</div>
+<img src="${item.image}" alt="${item.caption}" class="timeline-image">
+<div class="timeline-caption">${item.caption}</div>
+</div>
+`;
+timeline.appendChild(timelineItem);
+});
+})
+.catch(err=>console.log('Error loading memories:',err));
+
+function formatDate(dateStr){
+const date=new Date(dateStr);
+const day=date.getDate();
+const month=date.getMonth()+1;
+const year=date.getFullYear();
+return `${day}/${month}/${year}`;
+}
+</script>
